@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics | Smart Digital Investment Dashboard</title>
+        <!-- Auth Guard -->
+    <script src="js/auth-guard.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="dark-theme">
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fa-solid fa-chart-line"></i> SmartFolio</h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+                <li><a href="investments.html"><i class="fa-solid fa-bitcoin"></i> Investments</a></li>
+                <li><a href="business.html"><i class="fa-solid fa-briefcase"></i> Business Tracker</a></li>
+                <li class="active"><a href="analytics.html"><i class="fa-solid fa-chart-pie"></i> Analytics</a></li>
+                <li><a href="latest-stock-price.html"><i class="fa-solid fa-arrow-trend-up"></i> Latest Stock Price</a></li>
+                <li><a href="pro-version.html" style="background: linear-gradient(135deg, #d4af37, #f3e5ab); color: #000; font-weight: bold; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);"><i class="fa-solid fa-crown"></i> Upgrade to Pro</a></li>
+                <li><a href="about.html"><i class="fa-solid fa-users"></i> Team & About</a></li>
+                <li><a href="#" onclick="handleLogout()" style="color: var(--loss-red);"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-navbar">
+                <div class="search-bar">
+                    <i class="fa-solid fa-search text-secondary" style="cursor:pointer;" onclick="document.getElementById('global-search').focus()"></i>
+                    <input type="text" id="global-search" oninput="if(typeof handleSearch === 'function') handleSearch(event)" placeholder="Search assets, transactions...">
+                </div>
+                <div class="nav-icons" style="position: relative;">
+                    <div class="dropdown-wrapper" style="position: relative; display: inline-block;">
+                        <button class="icon-btn" onclick="toggleDropdown('notif-dropdown')"><i class="fa-regular fa-bell"></i><span class="badge">3</span></button>
+                        <div id="notif-dropdown" class="nav-dropdown" style="display: none; position: absolute; top: 100%; right: -50px; background: var(--bg-card); border: 1px solid var(--border-color); padding: 15px; border-radius: 12px; width: 250px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); z-index: 100; text-align: left;">
+                            <h4 style="margin-bottom: 10px; font-size: 0.9rem; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;">Notifications</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 8px;">🚀 Bitcoin is up 5% today!</p>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 8px;">💰 Dividends received: $120.00</p>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary);">⚠️ Tesla stock dropped 2%.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dropdown-wrapper" style="position: relative; display: inline-block;">
+                        <button class="icon-btn" onclick="toggleDropdown('msg-dropdown')"><i class="fa-regular fa-envelope"></i></button>
+                        <div id="msg-dropdown" class="nav-dropdown" style="display: none; position: absolute; top: 100%; right: -20px; background: var(--bg-card); border: 1px solid var(--border-color); padding: 15px; border-radius: 12px; width: 240px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); z-index: 100; text-align: left;">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                                <img src="https://ui-avatars.com/api/?name=Creator&background=10B981&color=fff" style="width: 35px; border-radius: 50%;" alt="Creator">
+                                <div>
+                                    <h4 style="font-size: 0.9rem; margin: 0;">Developer</h4>
+                                    <p style="font-size: 0.75rem; color: var(--text-secondary); margin: 0;">Creator & Maintainer</p>
+                                </div>
+                            </div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 5px;"><i class="fa-solid fa-envelope"></i> developer@example.com</div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);"><i class="fa-solid fa-phone"></i> +1 (555) 123-4567</div>
+                        </div>
+                    </div>
+
+                    <div class="user-profile" style="margin-left: 10px;">
+                        <img id="user-avatar" src="https://ui-avatars.com/api/?name=User&background=2563EB&color=fff" alt="User">
+                    </div>
+                </div>
+            </header>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h1>Detailed Analytics</h1>
+            </div>
+
+            <section class="charts-section" style="margin-bottom: 30px;">
+                <div class="chart-container" style="min-height: 400px; display: flex; flex-direction: column;">
+                    <h3>Investment Distribution (Crypto vs Stocks)</h3>
+                    <div style="flex: 1; position: relative; width: 100%; display: flex; justify-content: center; align-items: center;">
+                        <canvas id="quickPieChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-container" style="min-height: 400px; display: flex; flex-direction: column;">
+                    <h3>Business Cashflow (Income vs Expense)</h3>
+                    <div style="flex: 1; position: relative; width: 100%;">
+                        <canvas id="quickBarChart"></canvas>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+        <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (currentUser && currentUser.name) {
+                const avatarEl = document.getElementById('user-avatar');
+                if (avatarEl) {
+                    avatarEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=2563EB&color=fff`;
+                }
+            }
+        });
+
+        function toggleDropdown(id) {
+            document.querySelectorAll('.nav-dropdown').forEach(d => {
+                if (d.id !== id) d.style.display = 'none';
+            });
+            const el = document.getElementById(id);
+            if (el) el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.nav-icons')) {
+                document.querySelectorAll('.nav-dropdown').forEach(d => d.style.display = 'none');
+            }
+        });
+    </script>
+    <script src="js/charts.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initDashboardCharts();
+        });
+    </script>
+</body>
+</html>

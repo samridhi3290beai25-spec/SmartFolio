@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartFolio Pro | Premium Investment Plan</title>
+        <!-- Auth Guard -->
+    <script src="js/auth-guard.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .pro-feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 25px;
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .pro-feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(90deg, #d4af37, #f3e5ab);
+        }
+        .pro-feature-card:hover {
+            transform: translateY(-5px);
+            border-color: #d4af37;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fa-solid fa-chart-line"></i> SmartFolio</h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+                <li><a href="investments.html"><i class="fa-solid fa-bitcoin"></i> Investments</a></li>
+                <li><a href="business.html"><i class="fa-solid fa-briefcase"></i> Business Tracker</a></li>
+                <li><a href="analytics.html"><i class="fa-solid fa-chart-pie"></i> Analytics</a></li>
+                <li><a href="latest-stock-price.html"><i class="fa-solid fa-arrow-trend-up"></i> Latest Stock Price</a></li>
+                <li class="active"><a href="pro-version.html" style="background: linear-gradient(135deg, #d4af37, #f3e5ab) !important; color: #000 !important; font-weight: bold; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);"><i class="fa-solid fa-crown"></i> Upgrade to Pro</a></li>
+                <li><a href="about.html"><i class="fa-solid fa-users"></i> Team & About</a></li>
+                <li><a href="#" onclick="handleLogout()" style="color: var(--loss-red);"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-navbar">
+                <div class="search-bar">
+                    <i class="fa-solid fa-search text-secondary" style="cursor:pointer;" onclick="document.getElementById('global-search').focus()"></i>
+                    <input type="text" id="global-search" oninput="if(typeof handleSearch === 'function') handleSearch(event)" placeholder="Search assets, transactions...">
+                </div>
+                <div class="nav-icons" style="position: relative;">
+                    <button class="icon-btn" onclick="toggleTheme()" id="theme-toggle-btn"><i class="fa-solid fa-moon"></i></button>
+                    <div class="dropdown-wrapper" style="position: relative; display: inline-block;">
+                        <button class="icon-btn" onclick="toggleDropdown('notif-dropdown')"><i class="fa-regular fa-bell"></i><span class="badge">3</span></button>
+                        <div id="notif-dropdown" class="nav-dropdown" style="display: none; position: absolute; top: 100%; right: -50px; background: var(--bg-card); border: 1px solid var(--border-color); padding: 15px; border-radius: 12px; width: 250px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); z-index: 100; text-align: left;">
+                            <h4 style="margin-bottom: 10px; font-size: 0.9rem; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;">Notifications</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 8px;">🚀 Bitcoin is up 5% today!</p>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 8px;">💰 Dividends received: $120.00</p>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary);">⚠️ Tesla stock dropped 2%.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dropdown-wrapper" style="position: relative; display: inline-block;">
+                        <button class="icon-btn" onclick="toggleDropdown('msg-dropdown')"><i class="fa-regular fa-envelope"></i></button>
+                        <div id="msg-dropdown" class="nav-dropdown" style="display: none; position: absolute; top: 100%; right: -20px; background: var(--bg-card); border: 1px solid var(--border-color); padding: 15px; border-radius: 12px; width: 240px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); z-index: 100; text-align: left;">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                                <img src="https://ui-avatars.com/api/?name=Creator&background=10B981&color=fff" style="width: 35px; border-radius: 50%;" alt="Creator">
+                                <div>
+                                    <h4 style="font-size: 0.9rem; margin: 0;">Developer</h4>
+                                    <p style="font-size: 0.75rem; color: var(--text-secondary); margin: 0;">Creator & Maintainer</p>
+                                </div>
+                            </div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 5px;"><i class="fa-solid fa-envelope"></i> developer@example.com</div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);"><i class="fa-solid fa-phone"></i> +1 (555) 123-4567</div>
+                        </div>
+                    </div>
+
+                    <div class="user-profile" style="margin-left: 10px;">
+                        <img id="user-avatar" src="https://ui-avatars.com/api/?name=User&background=2563EB&color=fff" alt="User">
+                    </div>
+                </div>
+            </header>
+
+            <div style="text-align: center; margin-top: 20px; margin-bottom: 40px;">
+                <h1 style="font-size: 3.5rem; margin-bottom: 15px; background: -webkit-linear-gradient(45deg, #d4af37, #f3e5ab); background: linear-gradient(45deg, #d4af37, #f3e5ab); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;"><i class="fa-solid fa-crown" style="-webkit-text-fill-color: #d4af37; color: #d4af37;"></i> Elite Pro Membership</h1>
+                <p style="color: var(--text-secondary); font-size: 1.3rem; max-width: 700px; margin: 0 auto; line-height: 1.6;">Unlock the ultimate wealth-building experience for just <strong style="color: #d4af37; font-size: 1.5rem;">$1000 Annually</strong></p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 40px;">
+                <div class="pro-feature-card">
+                    <div style="color: #10B981; font-size: 2.5rem; margin-bottom: 20px;"><i class="fa-solid fa-shield-halved"></i></div>
+                    <h3 style="font-size: 1.4rem; color: var(--text-primary); margin-bottom: 15px;">Safe & Profitable Stocks</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">Our company's top-tier analysts will expertly invest your money in hand-picked, highly secure, and exceptionally profitable stocks. We guarantee minimal risk with maximum upside.</p>
+                </div>
+
+                <div class="pro-feature-card">
+                    <div style="color: #10B981; font-size: 2.5rem; margin-bottom: 20px;"><i class="fa-solid fa-arrow-up-right-dots"></i></div>
+                    <h3 style="font-size: 1.4rem; color: var(--text-primary); margin-bottom: 15px;">Target: Double Your Profit</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">Our strategic investment blueprint is specifically designed to help you make profits of almost double your initial investment. We leverage deep market insights to accelerate your wealth.</p>
+                </div>
+
+                <div class="pro-feature-card">
+                    <div style="color: #10B981; font-size: 2.5rem; margin-bottom: 20px;"><i class="fa-solid fa-user-tie"></i></div>
+                    <h3 style="font-size: 1.4rem; color: var(--text-primary); margin-bottom: 15px;">Dedicated Wealth Manager</h3>
+                    <p style="color: var(--text-secondary); line-height: 1.6;">Get direct access to a dedicated financial advisor from our team who will personally manage, actively rebalance, and monitor your portfolio's performance every single day.</p>
+                </div>
+            </div>
+
+            <div style="background: var(--bg-card); border: 1px solid #d4af37; border-radius: 16px; padding: 40px; text-align: center; box-shadow: 0 0 30px rgba(212, 175, 55, 0.1);">
+                <h2 style="font-size: 2rem; margin-bottom: 20px; color: var(--text-primary);">Ready to Transform Your Finances?</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 30px; font-size: 1.1rem; max-width: 600px; margin-left: auto; margin-right: auto;">Join the Premium members who are letting our company do the hard work while they enjoy safe, high-yield returns.</p>
+                <button class="btn" style="background: linear-gradient(135deg, #d4af37, #f3e5ab); color: #000; padding: 18px 40px; font-size: 1.3rem; font-weight: bold; border-radius: 12px; border: none; cursor: pointer; box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4); display: inline-flex; align-items: center; gap: 10px; transition: transform 0.3s;">
+                    <i class="fa-solid fa-credit-card"></i> Upgrade Now for $1000/yr
+                </button>
+            </div>
+            <br><br>
+        </main>
+    </div>
+</body>
+</html>

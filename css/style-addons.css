@@ -1,0 +1,115 @@
+/* Append or overwrite specific styles in style.css for UI enhancements */
+:root {
+    /* Light Fintech Theme Colors */
+    --bg-dark: #f8fafc;        /* Slate 50 - Softer Main Background */
+    --bg-card: #ffffff;        /* White - Cards */
+    --bg-sidebar: #ffffff;     /* White - Sidebar */
+    --text-primary: #0f172a;   /* Slate 900 - Headings & Main Text */
+    --text-secondary: #64748b; /* Slate 500 - Secondary Text */
+    --accent-blue: #2563eb;    /* Blue 600 - Primary Brand */
+    --accent-indigo: #4f46e5;  /* Indigo 600 */
+    --profit-green: #059669;   /* Emerald 600 - Profit */
+    --loss-red: #dc2626;       /* Red 600 - Loss */
+    --border-color: #e2e8f0;   /* Slate 200 - Borders */
+    
+    --transition-speed: 0.3s;
+    --box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05); /* Premium shadow */
+}
+
+/* Theme Styles */
+body.dark-theme {
+    --bg-dark: #000000;
+    --bg-card: #121212;
+    --bg-sidebar: #121212;
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0a0;
+    --border-color: #333333;
+}
+
+/* Ensure padding and layout adjust for top header */
+.top-navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--bg-card);
+    padding: 15px 40px;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 30px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    background-color: var(--bg-dark);
+    padding: 10px 20px;
+    border-radius: 30px;
+    width: 300px;
+    border: 1px solid var(--border-color);
+}
+
+.search-bar input {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    margin-left: 10px;
+    color: var(--text-primary);
+}
+
+.nav-icons {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    position: relative;
+}
+
+.icon-btn:hover {
+    color: var(--accent-blue);
+}
+
+.badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: var(--loss-red);
+    color: white;
+    font-size: 0.6rem;
+    padding: 2px 5px;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+/* Cards Update */
+.card {
+    box-shadow: var(--box-shadow);
+    border: none;
+}
+
+.page-section {
+    box-shadow: var(--box-shadow);
+    border: none;
+}
+
+.chart-container {
+    box-shadow: var(--box-shadow);
+    border: none;
+}
+
+/* Table Enhancements */
+tbody tr {
+    transition: background-color var(--transition-speed);
+}
+tbody tr:hover {
+    background-color: #f1f5f9;
+}

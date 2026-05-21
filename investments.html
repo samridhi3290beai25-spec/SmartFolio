@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investments | Smart Digital Investment Dashboard</title>
+        <!-- Auth Guard -->
+    <script src="js/auth-guard.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="dark-theme">
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fa-solid fa-chart-line"></i> SmartFolio</h2>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+                <li class="active"><a href="investments.html"><i class="fa-solid fa-bitcoin"></i> Investments</a></li>
+                <li><a href="business.html"><i class="fa-solid fa-briefcase"></i> Business Tracker</a></li>
+                <li><a href="analytics.html"><i class="fa-solid fa-chart-pie"></i> Analytics</a></li>
+                <li><a href="latest-stock-price.html"><i class="fa-solid fa-arrow-trend-up"></i> Latest Stock Price</a></li>
+                <li><a href="pro-version.html" style="background: linear-gradient(135deg, #d4af37, #f3e5ab); color: #000; font-weight: bold; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);"><i class="fa-solid fa-crown"></i> Upgrade to Pro</a></li>
+                <li><a href="about.html"><i class="fa-solid fa-users"></i> Team & About</a></li>
+                <li><a href="#" onclick="handleLogout()" style="color: var(--loss-red);"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-navbar">
+                <div class="search-bar">
+                    <i class="fa-solid fa-search text-secondary" style="cursor:pointer;" onclick="document.getElementById('global-search').focus()"></i>
+                    <input type="text" id="global-search" oninput="if(typeof handleSearch === 'function') handleSearch(event)" placeholder="Search assets, transactions...">
+                </div>
+                <div class="nav-icons" style="position: relative;">
+                    <div class="dropdown-wrapper" style="position: relative; display: inline-block;">
+                        <button class="icon-btn" onclick="toggleDropdown('notif-dropdown')"><i class="fa-regular fa-bell"></i><span class="badge">3</span></button>
+                        <div id="notif-dropdown" class="nav-dropdown" style="display: none; position: absolute; top: 100%; right: -50px; background: var(--bg-card); border: 1px solid var(--border-color); padding: 15px; border-radius: 12px; width: 250px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); z-index: 100; text-align: left;">
+                            <h4 style="margin-bottom: 10px; font-size: 0.9rem; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;">Notifications</h4>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 8px;">🚀 Bitcoin is up 5% today!</p>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 8px;">💰 Dividends received: $120.00</p>
+                            <p style="font-size: 0.8rem; color: var(--text-secondary);">⚠️ Tesla stock dropped 2%.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="dropdown-wrapper" style="position: relative; display: inline-block;">
+                        <button class="icon-btn" onclick="toggleDropdown('msg-dropdown')"><i class="fa-regular fa-envelope"></i></button>
+                        <div id="msg-dropdown" class="nav-dropdown" style="display: none; position: absolute; top: 100%; right: -20px; background: var(--bg-card); border: 1px solid var(--border-color); padding: 15px; border-radius: 12px; width: 240px; box-shadow: 0 10px 15px rgba(0,0,0,0.1); z-index: 100; text-align: left;">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                                <img src="https://ui-avatars.com/api/?name=Creator&background=10B981&color=fff" style="width: 35px; border-radius: 50%;" alt="Creator">
+                                <div>
+                                    <h4 style="font-size: 0.9rem; margin: 0;">Developer</h4>
+                                    <p style="font-size: 0.75rem; color: var(--text-secondary); margin: 0;">Creator & Maintainer</p>
+                                </div>
+                            </div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 5px;"><i class="fa-solid fa-envelope"></i> developer@example.com</div>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary);"><i class="fa-solid fa-phone"></i> +1 (555) 123-4567</div>
+                        </div>
+                    </div>
+
+                    <div class="user-profile" style="margin-left: 10px;">
+                        <img id="user-avatar" src="https://ui-avatars.com/api/?name=User&background=2563EB&color=fff" alt="User">
+                    </div>
+                </div>
+            </header>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h1>Investment Tracker</h1>
+            </div>
+
+            <section class="page-section">
+                <h3>Add New Asset</h3>
+                <form id="add-investment-form" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                    <div class="form-group">
+                        <label>Asset Name</label>
+                        <input type="text" id="asset-name" class="form-control" required placeholder="e.g. Bitcoin, Tesla">
+                    </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select id="asset-type" class="form-control">
+                            <option value="crypto">Crypto</option>
+                            <option value="stock">Stock</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantity</label>
+                        <input type="number" step="0.0001" id="asset-qty" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Buy Price ($)</label>
+                        <input type="number" step="0.01" id="asset-buy" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Current Price ($)</label>
+                        <input type="number" step="0.01" id="asset-current" class="form-control" required>
+                    </div>
+                    <div class="form-group" style="display: flex; align-items: flex-end;">
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">Add Asset</button>
+                    </div>
+                </form>
+            </section>
+
+            <section class="page-section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <div>
+                        <h3>Your Active Investments</h3>
+                        <p style="color: var(--text-secondary); margin-top: 5px;">Total Value: <strong id="inv-page-total" style="color: var(--text-primary); font-size: 1.1rem;">$0.00</strong></p>
+                    </div>
+                    <div>
+                        <select id="asset-filter" class="form-control" style="width: auto; display: inline-block;">
+                            <option value="all">All Assets</option>
+                            <option value="crypto">Crypto Only</option>
+                            <option value="stock">Stocks Only</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table id="investments-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Quantity</th>
+                                <th>Buy Price</th>
+                                <th>Current Price</th>
+                                <th>Total Value</th>
+                                <th>Profit/Loss</th>
+                                <th>Gain %</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Knowledge & Investment Sites Dashboard -->
+            <section class="page-section" style="margin-top: 25px;">
+                <h3 style="margin-bottom: 20px;">Resources & Further Knowledge</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                    <!-- Educational Resources -->
+                    <div class="card" style="display: flex; flex-direction: column; align-items: flex-start; gap: 15px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div class="card-icon" style="width: 40px; height: 40px; font-size: 1.2rem;">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                            </div>
+                            <h4 style="color: var(--text-primary); font-size: 1rem;">Educational Resources</h4>
+                        </div>
+                        <ul style="list-style: none; width: 100%; display: flex; flex-direction: column; gap: 10px;">
+                            <li><a href="https://www.investopedia.com/" target="_blank" style="color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 8px; transition: color 0.3s;" onmouseover="this.style.color='var(--accent-blue)'" onmouseout="this.style.color='var(--text-secondary)'"><i class="fa-solid fa-link" style="font-size: 0.8em;"></i> Investopedia</a></li>
+                            <li><a href="https://www.morningstar.com/" target="_blank" style="color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 8px; transition: color 0.3s;" onmouseover="this.style.color='var(--accent-blue)'" onmouseout="this.style.color='var(--text-secondary)'"><i class="fa-solid fa-link" style="font-size: 0.8em;"></i> Morningstar</a></li>
+                            <li><a href="https://www.khanacademy.org/economics-finance-domain/core-finance" target="_blank" style="color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 8px; transition: color 0.3s;" onmouseover="this.style.color='var(--accent-blue)'" onmouseout="this.style.color='var(--text-secondary)'"><i class="fa-solid fa-link" style="font-size: 0.8em;"></i> Khan Academy Finance</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Market News -->
+                    <div class="card" style="display: flex; flex-direction: column; align-items: flex-start; gap: 15px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div class="card-icon" style="width: 40px; height: 40px; font-size: 1.2rem; background-color: rgba(16, 185, 129, 0.2); color: var(--profit-green);">
+                                <i class="fa-solid fa-newspaper"></i>
+                            </div>
+                            <h4 style="color: var(--text-primary); font-size: 1rem;">Market News</h4>
+                        </div>
+                        <ul style="list-style: none; width: 100%; display: flex; flex-direction: column; gap: 10px;">
+                            <li><a href="https://www.bloomberg.com/" target="_blank" style="color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 8px; transition: color 0.3s;" onmouseover="this.style.color='var(--accent-blue)'" onmouseout="this.style.color='var(--text-secondary)'"><i class="fa-solid fa-link" style="font-size: 0.8em;"></i> Bloomberg</a></li>
+                            <li><a href="https://www.cnbc.com/" target="_blank" style="color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 8px; transition: color 0.3s;" onmouseover="this.style.color='var(--accent-blue)'" onmouseout="this.style.color='var(--text-secondary)'"><i class="fa-solid fa-link" style="font-size: 0.8em;"></i> CNBC</a></li>
+                            <li><a href="https://finance.yahoo.com/" target="_blank" style="color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 8px; transition: color 0.3s;" onmouseover="this.style.color='var(--accent-blue)'" onmouseout="this.style.color='var(--text-secondary)'"><i class="fa-solid fa-link" style="font-size: 0.8em;"></i> Yahoo Finance</a></li>
+                        </ul>
+                    </div>
+
+                    <!-- Investment Platforms -->
+                    <div class="card" style="display: flex; flex-direction: column; align-items: flex-start; gap: 15px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div class="card-icon" style="width: 40px; height: 40px; font-size: 1.2rem; background-color: rgba(220, 38, 38, 0.2); color: var(--loss-red);">
+                                <i class="fa-solid fa-building-columns"></i>
+                            </div>
+                            <h4 style="color: var(--text-primary); font-size: 1rem;">Top Platforms</h4>
+                        </div>
+                        <ul style="list-style: none; width: 100%; display: flex; flex-direction: column; gap: 10px;">
+                            <li><a href="https://www.vanguard.com/" target="_blank" style="color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 8px; transition: color 0.3s;" onmouseover="this.style.color='var(--accent-blue)'" onmouseout="this.style.color='var(--text-secondary)'"><i class="fa-solid fa-link" style="font-size: 0.8em;"></i> Vanguard</a></li>
+                            <li><a href="https://www.fidelity.com/" target="_blank" style="color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 8px; transition: color 0.3s;" onmouseover="this.style.color='var(--accent-blue)'" onmouseout="this.style.color='var(--text-secondary)'"><i class="fa-solid fa-link" style="font-size: 0.8em;"></i> Fidelity</a></li>
+                            <li><a href="https://www.coinbase.com/" target="_blank" style="color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 8px; transition: color 0.3s;" onmouseover="this.style.color='var(--accent-blue)'" onmouseout="this.style.color='var(--text-secondary)'"><i class="fa-solid fa-link" style="font-size: 0.8em;"></i> Coinbase</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+        <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (currentUser && currentUser.name) {
+                const avatarEl = document.getElementById('user-avatar');
+                if (avatarEl) {
+                    avatarEl.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=2563EB&color=fff`;
+                }
+            }
+        });
+
+        function toggleDropdown(id) {
+            document.querySelectorAll('.nav-dropdown').forEach(d => {
+                if (d.id !== id) d.style.display = 'none';
+            });
+            const el = document.getElementById(id);
+            if (el) el.style.display = el.style.display === 'block' ? 'none' : 'block';
+        }
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.nav-icons')) {
+                document.querySelectorAll('.nav-dropdown').forEach(d => d.style.display = 'none');
+            }
+        });
+    </script>
+    <script src="js/investments.js"></script>
+</body>
+</html>

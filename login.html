@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Secure Access - SmartFolio</title>
+    <!-- We include auth guard here, which will redirect if already logged in -->
+    <script src="js/auth-guard.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Abstract Background Elements */
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 0;
+            opacity: 0.6;
+        }
+        .shape1 { background: var(--accent-blue); width: 400px; height: 400px; top: -100px; left: -100px; }
+        .shape2 { background: var(--accent-indigo); width: 300px; height: 300px; bottom: -50px; right: -50px; }
+        .shape3 { background: var(--profit-green); width: 250px; height: 250px; bottom: 20%; left: 10%; opacity: 0.3; }
+
+        .auth-container {
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transition: height 0.3s ease;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-header h2 {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: #fff;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .auth-header p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .toggle-btns {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 5px;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 10px 0;
+            text-align: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            font-weight: 600;
+            z-index: 1;
+            transition: color 0.3s ease;
+        }
+
+        .toggle-btn.active {
+            color: #fff;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: calc(50% - 5px);
+            height: calc(100% - 10px);
+            background: var(--accent-blue);
+            border-radius: 8px;
+            transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 0;
+        }
+
+        .auth-form {
+            display: none;
+            animation: fadeIn var(--transition-speed) ease;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease, background 0.3s ease;
+        }
+
+        .input-group input:focus {
+            border-color: var(--accent-blue);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .input-group input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .auth-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.3s;
+            margin-top: 10px;
+        }
+
+        .auth-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: var(--loss-red);
+            font-size: 0.9rem;
+            text-align: center;
+            margin-bottom: 15px;
+            display: none;
+            background: rgba(220, 38, 38, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="shape shape1"></div>
+    <div class="shape shape2"></div>
+    <div class="shape shape3"></div>
+
+    <div class="auth-container">
+        <div class="auth-header">
+            <h2><i class="fa-solid fa-chart-line"></i> SmartFolio</h2>
+            <p>Secure access to your investment portfolio</p>
+        </div>
+
+        <div class="toggle-btns">
+            <div class="toggle-slider" id="toggle-slider"></div>
+            <div class="toggle-btn active" id="btn-login" onclick="switchForm('login')">Login</div>
+            <div class="toggle-btn" id="btn-register" onclick="switchForm('register')">Register</div>
+        </div>
+
+        <div id="error-box" class="error-message"></div>
+
+        <!-- Login Form -->
+        <form id="login-form" class="auth-form active" onsubmit="handleLogin(event)">
+            <div class="input-group">
+                <i class="fa-solid fa-envelope"></i>
+                <input type="text" id="login-username" placeholder="Username or Email" required>
+            </div>
+            <div class="input-group">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="login-password" placeholder="Password" required>
+            </div>
+            <div style="text-align: right; margin-top: -10px; margin-bottom: 15px;">
+                <a href="#" onclick="switchForm('forgot')" style="color: #60a5fa; font-size: 0.85rem; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#60a5fa'">Forgot Password?</a>
+            </div>
+            <button type="submit" class="auth-btn">Sign In to Dashboard</button>
+        </form>
+
+        <!-- Register Form -->
+        <form id="register-form" class="auth-form" onsubmit="handleRegister(event)">
+            <div class="input-group">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" id="reg-name" placeholder="Full Name" required>
+            </div>
+            <div class="input-group">
+                <i class="fa-solid fa-envelope"></i>
+                <input type="text" id="reg-username" placeholder="Email / Username" required>
+            </div>
+            <div class="input-group">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="reg-password" placeholder="Password (Min 6 chars)" minlength="6" required>
+            </div>
+            <button type="submit" class="auth-btn">Create Profile</button>
+        </form>
+
+        <!-- Forgot Password Form -->
+        <form id="forgot-form" class="auth-form" onsubmit="handleForgot(event)">
+            <div style="text-align: center; margin-bottom: 20px; color: #94a3b8; font-size: 0.95rem;">
+                Enter your email address and we'll send you a link to reset your password.
+            </div>
+            <div class="input-group">
+                <i class="fa-solid fa-envelope"></i>
+                <input type="text" id="forgot-email" placeholder="Email Address" required>
+            </div>
+            <button type="submit" class="auth-btn">Send Reset Link</button>
+            <div style="text-align: center; margin-top: 15px;">
+                <a href="#" onclick="switchForm('login')" style="color: #94a3b8; font-size: 0.9rem; text-decoration: none; transition: color 0.3s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='#94a3b8'"><i class="fa-solid fa-arrow-left"></i> Back to Login</a>
+            </div>
+        </form>
+    </div>
+
+    <script src="js/auth.js"></script>
+</body>
+</html>
